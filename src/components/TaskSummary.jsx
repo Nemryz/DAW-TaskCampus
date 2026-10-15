@@ -1,9 +1,9 @@
 // Recibo la cantidad desde arriba porque el resumen debe mostrar datos reales y no un número escrito a mano
+// Las propiedades que este componenteTodavía no destructura igual se las entrega el padre, y H2 las aprovecha
 function TaskSummary({ total }) {
   return (
     <section className="card">
       <h2 className="section-title">Resumen</h2>
-      {/* Hoy existe un solo contador, y los contadores calculados desde la lista llegan con la etapa N4 */}
       <p>Tienes {total} tareas pendientes</p>
     </section>
   )

@@ -193,6 +193,86 @@ La rama de trabajo resuelve ese problema porque aísla cada etapa. La solicitud 
 
 De esa manera la rama principal permanece compilable en todo momento, la integración ocurre de forma continua en lugar de concentrarse en una fusión grande al final, y el historial registra el recorrido completo del proyecto con una etapa por commit. Además, si una etapa se alarga o se estropea, la rama se descarta sin afectar nada porque ese trabajo todavía no se integró.
 
+## Procedimiento de avance por etapas y contrato de integración
+
+### Qué se estableció como procedimiento
+
+Cada etapa se desarrolla en una rama propia y llega a la rama principal mediante una solicitud de elevación que el otro integrante revisa antes de aprobar. El objetivo del procedimiento es que la rama principal permanezca compilable en todo momento, de manera que nadie trabaje sobre un estado roto ni necesite esperar a que el otro termine. Cada etapa responde a un conjunto concreto de requisitos y se comprueba en la pantalla antes de integrarse, con lo cual el historial de commits documenta el recorrido del proyecto y sirve además como evidencia del método.
+
+### Cómo avanzó las etapas de Ignacio Ampuero
+
+Ignacio Ampuero desarrolló la primera etapa del ciclo. Creó el archivo de servicio que se comunica con el servidor y el archivo de gancho que encierra todo el estado de las tareas, conectó el componente raíz con ese gancho y corrigió el documento de entrada para declarar el idioma y el título correctos. Durante esa etapa retiró la alerta del navegador y el botón de acción que solo servía para invocarla, y reemplazó la cantidad fija por el largo real de la colección.
+
+El componente de listado recibió desde ese momento la colección junto con los dos avisos de la interfaz, aunque todavía no los utiliza. Esa anticipación tiene un propósito concreto, porque deja escrita en el archivo del padre la firma que el segundo integrante necesita construir, de modo que no tenga que deducirla ni quedarse esperando una definición.
+
+El modelo de datos quedó resuelto en esa etapa y no en una posterior. Cada tarea viaja con una identidad local de tipo texto que sirve como clave en el recorrido, una identidad del servidor que puede ser nula y una bandera que indica si esa tarea existe realmente en el servidor. Tomar esa decisión en ese momento evitó tener que renombrar campos más adelante y permitió que las etapas siguientes trabajaran sobre un contrato estable.
+
+### Qué beneficios produjo el procedimiento
+
+El procedimiento permitió alcanzar un estado verificable de la aplicación sin esperar al final del proyecto, porque cada etapa se comprobó en la pantalla antes de integrarse. También dejó escrita la frontera entre la capa que produce el estado y la capa que lo muestra, con lo cual el trabajo del segundo integrante arrancó sin depender de la entrega del primero. La ausencia de archivos editados por los dos al mismo tiempo eliminó la posibilidad de conflictos de integración.
+
+### Por qué la etapa siguiente no genera conflictos de integración
+
+La segunda etapa agrega operaciones al archivo de servicio y al archivo de gancho, y no importa ningún componente nuevo. El componente raíz no requiere cambios porque el gancho expone las funciones sin que la aplicación las utilice todavía. Esa separación permite que la rama principal siga compilando y que la revisión se limite a comprobar que el analizador y la compilación pasan, sin necesidad de revisar la capa de presentación.
+
+### Contrato de integración para Santiago Herrera
+
+Santiago Herrera trabaja sobre la capa de presentación y puede avanzar de inmediato, porque la primera etapa ya está integrada y el contrato que necesita está escrito en los archivos del padre.
+
+| Archivo | Puede editarlo | No puede editarlo |
+| --- | --- | --- |
+| `src/components/` | Santiago Herrera | Ignacio Ampuero |
+| `src/views/` | Santiago Herrera | Ignacio Ampuero |
+| `src/App.css` | Santiago Herrera | Ignacio Ampuero |
+| `src/index.css` | Santiago Herrera | Ignacio Ampuero |
+| `src/App.jsx` | Ignacio Ampuero | Santiago Herrera |
+| `src/hooks/useTareas.js` | Ignacio Ampuero | Santiago Herrera |
+| `src/services/tareasService.js` | Ignacio Ampuero | Santiago Herrera |
+
+#### Propiedades que recibe cada componente
+
+| Componente | Propiedades | Estado |
+| --- | --- | --- |
+| `TaskList` | `title` de tipo texto, `tareas` de tipo colección, `cargando` de tipo booleano y `error` de tipo texto o nulo | Ya entregadas en `App.jsx` |
+| `TaskSummary` | `total`, `completadas`, `pendientes` y `mostradas` de tipo número, y `filtroActual` de tipo texto | Las cuatro numéricas se entregan ahora, `filtroActual` llega con la etapa N4 |
+| `Button` | `label`, `onClick`, `variant`, `disabled` y `type` | Santiago las define en H1 |
+| `Badge` | `texto` | Santiago la define en H1 |
+| `Card` | `titulo` y `children` | Santiago las define en H1 |
+| `Modal` | `visible`, `mensaje`, `onConfirmar` y `onCancelar` | Santiago las define en H1 |
+| `EmptyState` | `icono` y `mensaje` | Santiago las define en H1 |
+| `TaskForm` | `onAgregar`, `creando`, `error` y `exito` | Santiago las define en H3 |
+| `TaskItem` | `tarea`, `enOperacion`, `onAlternar`, `onEditar` y `onEliminar` | Santiago las define en H4 |
+| `Navigation` | `vistaActiva` y `onCambiarVista` | Santiago las define en H4 |
+
+#### Forma de cada tarea
+
+| Campo | Tipo | Significado |
+| --- | --- | --- |
+| `idLocal` | texto | Identidad única y estable para la interfaz, se usa como clave en el recorrido |
+| `idRemoto` | número o nulo | Identidad en el servidor, nula cuando la tarea se creó durante la sesión |
+| `titulo` | texto | Título de la tarea |
+| `completada` | booleano | Indica si la tarea está completada |
+| `esLocal` | booleano | Indica que la tarea no existe en el servidor |
+
+#### Orden de ejecución
+
+| Etapa | Depende de | Puede empezar |
+| --- | --- | --- |
+| H1 | Nada | De inmediato |
+| H2 | La primera etapa, que ya está integrada | De inmediato |
+
+#### Condiciones que debe cumplir
+
+1. No modificar `src/App.jsx` para pasar propiedades nuevas. Si necesita alguna, la pide y la agrega Ignacio Ampuero.
+2. No escribir estilos dentro del marcado, porque el enunciado exige hojas de estilo separadas.
+3. No agregar dependencias al proyecto.
+4. Recorrer la colección con `tarea.idLocal` como clave y nunca con el índice del arreglo.
+5. Eliminar `src/components/ActionButton.jsx` dentro de H2, porque el componente raíz ya dejó de importarlo y nada lo referencia.
+
+#### Compromiso de Ignacio Ampuero
+
+Antes de que H2 se integre, Ignacio Ampuero entrega las cuatro propiedades numéricas del componente resumen con valores provisionales, de modo que Santiago Herrera pueda construirlo una sola vez y con la firma definitiva. Cuando la etapa N4 aterrice, esas propiedades dejan de ser constantes y pasan a calcularse desde la colección y el filtro activo.
+
 ## Cobertura de tutoriales y detalle de tareas
 
 Cada fila explica qué se hizo dentro del repositorio y en qué tutorial se encuentra el fundamento de esa decisión.

@@ -11,12 +11,18 @@ function App() {
   // Obtengo la colección y los dos avisos que necesito para distinguir la carga del fallo
   const { tareas, cargando, error } = useTareas()
 
-  // Recalculo la cantidad de pendientes y la escribo en el título de la pestaña del navegador.
-  // El arreglo de dependencias es la colección dado que los filtros y los contadores llegan en la etapa N4
+  // Derivo los contadores desde la colección porque el resumen no debe guardar su propia copia de los datos
+  // El monto mostrado y el filtro activo son provisionales hasta la etapa N4, cuando existan ambos conceptos
+  const completadas = tareas.filter((t) => t.completada).length
+  const pendientes = tareas.length - completadas
+  const mostradas = tareas.length
+  const filtroActual = 'todas'
+
+  // Escribo la cantidad de pendientes en el título de la pestaña usando el valor ya derivado
+  // Depender del contador y no de la colección evita recalcular el mismo dato en dos lugares
   useEffect(() => {
-    const pendientes = tareas.filter((t) => !t.completada).length
     document.title = `TaskCampus (${pendientes} pendientes)`
-  }, [tareas])
+  }, [pendientes])
 
   return (
     <main className="app-container">
@@ -25,8 +31,14 @@ function App() {
         title="TaskCampus"
         description="Gestor de tareas académicas"
       />
-      {/* El resumen recibe el largo real de la colección en lugar de una cantidad fija */}
-      <TaskSummary total={tareas.length} />
+      {/* El resumen recibe los cuatro contadores ya calculados desde la colección de este archivo */}
+      <TaskSummary
+        total={tareas.length}
+        completadas={completadas}
+        pendientes={pendientes}
+        mostradas={mostradas}
+        filtroActual={filtroActual}
+      />
 
       {/* Este aviso solo aparece mientras la petición viaja y desaparece al terminar */}
       {cargando && <p>Cargando tareas...</p>}
