@@ -119,21 +119,79 @@ La aplicación separa cuatro responsabilidades que antes se mezclaban en un solo
 
 Las capas de hook y de servicio todavía no existen en el estado actual del repositorio, porque corresponden a las etapas que se describen más adelante.
 
-## Estado actual del proyecto
+## Reparto del trabajo por tutorial
 
-Esta tabla indica qué se encuentra implementado y qué se encuentra en construcción.
+El trabajo se reparte por capa arquitectónica y no por tutorial completo. Cada integrante asume fragmentos de varios tutoriales y entre ambos cubren los nueve.
 
-| Etapa | Estado | Origen |
+Esta decisión responde al orden en que se dependen las piezas. El componente de botón que enseña el tutorial 10 es precisamente el que consume el formulario controlado del tutorial 09. Si el reparto fuera por tutorial completo, el formulario quedaría bloqueado hasta que el otro terminara el 10 y el orden natural de aprendizaje quedaría invertido. Con el reparto por capa cada integrante construye primero lo que necesita para avanzar por su cuenta.
+
+| Tutorial | Parte de Ignacio Ampuero | Parte de Santiago Herrera |
 | --- | --- | --- |
-| Tutorial 04 | Completado | Base entregada |
-| Tutorial 05 | Completado | Ignacio Ampuero |
-| Tutorial 06 | Completado | Ignacio Ampuero |
-| Tutorial 07 | En construcción | Ignacio Ampuero |
-| Tutorial 08 | Pendiente | Santiago Herrera |
-| Tutorial 09 | Pendiente | Santiago Herrera |
-| Tutorial 10 | Pendiente | Santiago Herrera |
-| Tutorial 11 | Pendiente | Ignacio Ampuero |
-| Tutorial 12 | Pendiente | Ignacio Ampuero |
+| 04 | Nada, el proyecto ya venía creado en la base entregada | Nada, el proyecto ya venía creado en la base entregada |
+| 05 | El componente de pie de página con su propiedad y la corrección de la propiedad que el listado recibía sin usar | Nada, la base ya traía los componentes con props y eventos |
+| 06 | Nada | La limpieza de los estilos globales que quedaban de la plantilla y el resto de las hojas de estilo |
+| 07 | Todo el contenido, con las etapas N1 y N2 | Nada |
+| 08 | El cálculo de los datos derivados dentro del componente raíz | El recorrido de la lista, la clave estable y el renderizado condicional |
+| 09 | La carga inicial con el efecto de montaje y el encapsulado en el hook | El formulario controlado con su validación |
+| 10 | Nada | Todo el contenido, que corresponde a la etapa H1 |
+| 11 | El servicio, el hook y las cuatro operaciones contra la API | La presentación de los estados de carga, error y éxito |
+| 12 | La coordinación del estado elevado en la aplicación | Las tres vistas y la navegación entre ellas |
+
+Los tutoriales 08, 09 y 12 aparecen en las dos columnas. Esa coincidencia no señala un conflicto, señala las costuras donde el estado que produce uno se convierte en propiedades que consume el otro.
+
+Cada etapa produce un commit propio y cada integrante completa cuatro etapas considerables, sin contar los commits de integración que existen únicamente para que la rama principal siga compilando.
+
+## Etapas de trabajo de cada integrante
+
+Cada etapa se entrega como una rama independiente, se revisa mediante una solicitud de elevación y se integra en la rama principal una vez que compila. La columna de requisitos indica qué puntos del enunciado cierra esa etapa y la última columna describe cómo se comprueba que el trabajo quedó hecho.
+
+### Etapas de Ignacio Ampuero
+
+Su responsabilidad es la capa de datos y la coordinación. Estas etapas construyen el servicio, el hook y el estado compartido que alimentan a la capa de presentación.
+
+| Etapa | Qué resuelve | Requisitos | Archivos que toca | Depende de | Cómo se comprueba |
+| --- | --- | --- | --- | --- | --- |
+| N1 | Conecta la aplicación con la API, reemplaza las tareas escritas a mano por datos reales y retira las alertas y la cantidad constante | RF01, RF02, RF11 | `src/services/tareasService.js`, `src/hooks/useTareas.js`, `src/App.jsx`, `index.html` | Nada, arranca desde la base | La pestaña Network muestra la petición de lectura y en la consola aparecen diez tareas con título y estado en español |
+| N2 | Implementa las cuatro operaciones contra la API y refleja cada resultado en el estado sin modificar el valor anterior | RF03, RF05, RF07, tercer tema de investigación | `src/services/tareasService.js`, `src/hooks/useTareas.js` | N1 | El servicio responde a los cuatro métodos y la búsqueda confirma que ninguna actualización pasa el estado directo |
+| N3 | Distingue la identidad local de la identidad remota y bloquea los controles mientras una operación está en curso | RF06 en su parte lógica, RF12, cuarto tema de investigación | `src/hooks/useTareas.js`, `src/App.jsx` | N2 | Dos tareas creadas seguidas no repiten clave y los controles quedan deshabilitados mientras la petición viaja |
+| N4 | Calcula los datos derivados y permite cambiar de vista sin recargar la aplicación | RF08, RF09, RF10, RF13, primer y segundo tema de investigación | `src/App.jsx` | N3 | Los filtros sobreviven al cambio de vista y los contadores se recalculan solos |
+
+### Etapas de Santiago Herrera
+
+Su responsabilidad es la capa de presentación. Estas etapas construyen los componentes reutilizables, el formulario, la edición en línea y las tres vistas que consumen el estado que produce la otra capa.
+
+| Etapa | Qué resuelve | Requisitos | Archivos que toca | Depende de | Cómo se comprueba |
+| --- | --- | --- | --- | --- | --- |
+| H1 | Construye la base de interfaz reutilizable que todas las etapas posteriores consumen | Criterio de organización y reutilización | `src/components/Button.jsx`, `Badge.jsx`, `Card.jsx`, `Modal.jsx`, `EmptyState.jsx`, `src/App.css`, `src/index.css`, `src/components/TaskList.jsx` | Nada, arranca desde la base | La aplicación sigue blanca con el sistema en modo oscuro y el botón aparece en más de un lugar |
+| H2 | Genera la lista a partir de los datos y diferencia los estados de carga, de error y de resultado vacío | RF02, RF08, RF10, RF11, segundo tema de investigación | `src/components/TaskList.jsx`, `src/components/TaskSummary.jsx`, `src/App.css` y borra `src/components/ActionButton.jsx` | N1 | Diez tareas reales en pantalla, la consola sin avisos de clave y la búsqueda de alertas sin resultados |
+| H3 | Agrega el formulario controlado con validación e integra la confirmación de borrado | RF03, RF04, RF07 | `src/components/TaskForm.jsx`, `src/components/TaskList.jsx`, `src/App.css` | N2 | Un título vacío no guarda y avisa, cancelar el borrado conserva la tarea y los contadores bajan al confirmar |
+| H4 | Permite editar el título en línea, buscar por texto y cambiar entre las tres vistas | RF06, RF09, RF12, RF13, primer tema de investigación | `src/components/TaskItem.jsx`, `src/components/Navigation.jsx`, `src/views/`, `src/components/TaskList.jsx`, `src/components/TaskSummary.jsx`, `src/App.css` | N4 | La búsqueda ignora mayúsculas, un título vacío revierte al anterior y las tres vistas conservan tareas y filtros |
+
+Dentro de cada etapa, el orden queda fijado por las dependencias de la tabla. En un sprint donde ambos trabajan, la etapa de Ignacio se integra primero porque el archivo de coordinación es suyo, y la de Santiago se integra después de actualizar su rama.
+
+## Metodología de trabajo
+
+El desarrollo se organiza con un esquema próximo a Scrum, adaptado a un equipo de dos personas y a un alcance académico con fecha de entrega.
+
+### Por qué se dividió el trabajo en etapas
+
+El enunciado reúne nueve tutoriales que, por separado, parecen contenidos manejables. Al combinarlos producen una aplicación completa con capa de datos, capa de comunicación, capa de presentación, navegación y persistencia en memoria. Abandonar ese conjunto a dos personas tendría un riesgo que no es la falta de esfuerzo sino la dispersión, porque cada uno intentaría abarcar la totalidad del alcance y ambos chocarían en los mismos archivos.
+
+La división por capa evita ese problema porque acota el terreno de cada uno. Ignacio se ocupa de producir y mantener el estado, Santiago se ocupa de mostrarlo e interactuar con él, y entre los dos existe una frontera nítida de archivos donde ninguno edita lo del otro. Esa frontera reduce los conflictos de integración a un número casi nulo, ya que los únicos puntos de contacto son las props que cada uno define y entrega.
+
+### Por qué se manifestó en etapas pequeñas y verificables
+
+Cada etapa responde a un conjunto concreto de requisitos, ocupa un número acotado de archivos y se puede comprobar en la pantalla sin necesidad de terminar el proyecto. Esa granularidad reproduce el ciclo central de Scrum, donde cada incremento debe producir algo verificable en lugar de acumular trabajo a ciegas.
+
+El beneficio doble es directo. Por un lado, si una etapa falla, el error queda contenido en tres o cuatro archivos y se localiza rápido. Por otro lado, el historial de commits deja de ser un registro informal y pasa a ser la evidencia del método, porque cada commit corresponde a un incremento con propósito, alcance y resultado verificable.
+
+### Por qué se trabaja con ramas, solicitudes de elevación y fusiones
+
+La rama principal es el punto de referencia que el docente revisa, que se clona para la verificación de reproducibilidad y que el enunciado exige que funcione sin pedir permisos. Si todo el desarrollo ocurriera directamente sobre ella, cualquier error intermedio dejaría el repositorio en un estado que no compila y que no se puede revisar.
+
+La rama de trabajo resuelve ese problema porque aísla cada etapa. La solicitud de elevación introduce una revisión antes de integrar, de modo que el otro integrante comprueba que la etapa compila, que respeta la frontera de archivos y que cierra los requisitos que dice servir. La fusión, por último, reintegra el trabajo únicamente cuando está verificado.
+
+De esa manera la rama principal permanece compilable en todo momento, la integración ocurre de forma continua en lugar de concentrarse en una fusión grande al final, y el historial registra el recorrido completo del proyecto con una etapa por commit. Además, si una etapa se alarga o se estropea, la rama se descarta sin afectar nada porque ese trabajo todavía no se integró.
 
 ## Cobertura de tutoriales y detalle de tareas
 
