@@ -16,3 +16,41 @@ export async function getTareas(limite = 10) {
   // Devuelvo el texto convertido en objetos porque el hook necesita objetos y no cadenas
   return res.json()
 }
+
+// Esta función crea una tarea en el servidor y devuelve lo que el simulador responde
+// El cuerpo viaja con los nombres que espera el servidor, porque el servicio es quien habla su idioma
+export async function postTarea(titulo) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title: titulo, completed: false, userId: 1 }),
+  })
+
+  // Aplico la misma validación de la lectura, porque un fallo al crear también debe llegar a la interfaz
+  if (!res.ok) throw new Error(`Error al crear la tarea (HTTP ${res.status})`)
+
+  return res.json()
+}
+
+// Esta función reemplaza por completo una tarea existente y por eso necesita su identificador remoto
+// Los cambios viajan tal cual porque quien llama decide qué campos quiere modificar
+export async function putTarea(idRemoto, cambios) {
+  const res = await fetch(`${API_URL}/${idRemoto}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(cambios),
+  })
+
+  // Si el servidor rechaza la operación, el error sube y el estado local no se toca
+  if (!res.ok) throw new Error(`Error al actualizar la tarea (HTTP ${res.status})`)
+
+  return res.json()
+}
+
+// Esta función borra una tarea del servidor y no necesita cuerpo porque el servidor no devuelve contenido
+export async function deleteTarea(idRemoto) {
+  const res = await fetch(`${API_URL}/${idRemoto}`, { method: 'DELETE' })
+
+  // Valido igual que en las otras operaciones para no presentar un borrado fallido como exitoso
+  if (!res.ok) throw new Error(`Error al eliminar la tarea (HTTP ${res.status})`)
+}
