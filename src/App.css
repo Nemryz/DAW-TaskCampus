@@ -1,3 +1,5 @@
+/* Esta hoja concentra el diseño de la aplicación y reemplaza a los estilos dentro de los componentes */
+/* Defino el fondo blanco y una tipografía sencilla para que el proyecto se vea académico y limpio */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -5,12 +7,14 @@ body {
   color: #0f172a;
 }
 
+/* Centro la aplicación en pantalla y dejo aire alrededor para que no quede pegada a los bordes */
 #root {
   display: flex;
   justify-content: center;
   padding: 40px 20px;
 }
 
+/* El contenedor principal limita el ancho para que las líneas no se vuelvan ilegibles en pantallas grandes */
 .app-container {
   width: 100%;
   max-width: 900px;
@@ -21,6 +25,7 @@ body {
   box-shadow: 0 4px 12px rgba(30, 64, 175, 0.08);
 }
 
+/* La cabecera lleva borde inferior para separar visualmente el título del contenido */
 .header {
   text-align: center;
   margin-bottom: 32px;
@@ -28,18 +33,21 @@ body {
   border-bottom: 2px solid #bfdbfe;
 }
 
+/* El nombre del proyecto usa un azul fuerte porque es el elemento con más jerarquía de la pantalla */
 .header-title {
   margin: 0;
   font-size: 2.5rem;
   color: #1d4ed8;
 }
 
+/* La descripción baja el contraste y el tamaño para no competir con el título */
 .header-description {
   margin-top: 10px;
   font-size: 1.1rem;
   color: #475569;
 }
 
+/* La tarjeta agrupa cada sección con fondo azul muy claro y bordes redondeados */
 .card {
   background-color: #eff6ff;
   border: 1px solid #bfdbfe;
@@ -47,15 +55,18 @@ body {
   padding: 20px;
   margin-bottom: 20px;
 }
+/* El título de cada tarjeta usa un azul intenso para marcar dónde empieza cada bloque */
 .section-title {
   margin-top: 0;
   color: #1e3a8a;
 }
+/* Quito las marcas de la lista porque cada tarea se dibuja como una tarjeta propia */
 .task-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+/* Cada tarea se presenta en fila y la distribución del espacio empuja el botón hacia la derecha */
 .task-item {
   background-color: #ffffff;
   border: 1px solid #dbeafe;
@@ -68,6 +79,7 @@ body {
   align-items: center;
   gap: 12px;
 }
+/* El botón principal usa azul con sombra suave para que se note que se puede presionar */
 .task-button {
   background-color: #2563eb;
   color: white;
@@ -81,15 +93,18 @@ body {
   box-shadow: 0 4px 10px rgba(37, 99, 235, 0.20);
 }
 
+/* Al pasar el cursor el botón se oscurece y se levanta apenas para confirmar la interacción */
 .task-button:hover {
   background-color: #1d4ed8;
   transform: translateY(-1px);
 }
 
+/* Al presionar el botón se hunde un poco porque da la sensación de que entró */
 .task-button:active {
   transform: scale(0.98);
 }
 
+/* Esta variante se reserva para acciones secundarias y usa fondo blanco con borde azul */
 .task-button-secondary {
   background-color: #ffffff;
   color: #2563eb;
@@ -102,11 +117,13 @@ body {
   transition: all 0.25s ease;
 }
 
+/* En su estado normal la variante secundaria se mantiene discreta para no competir con la principal */
 .task-button-secondary:hover {
   background-color: #eff6ff;
   border-color: #2563eb;
 }
 
+/* El pie de página se separa del contenido con una línea y espacio para que la zona respire */
 .footer {
   margin-top: 28px;
   padding-top: 18px;
@@ -114,6 +131,7 @@ body {
   text-align: center;
 }
 
+/* El texto del pie usa tamaño pequeño y color apagado porque es información secundaria */
 .footer-text {
   margin: 0;
   font-size: 0.875rem;

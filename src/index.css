@@ -1,3 +1,5 @@
+/* Esta hoja es la que menos controlamos porque es la plantilla que el generador dejó en la base */
+/* Declara el modo claro y el modo oscuro, y esto hace que la aplicación se ponga oscura con Windows en tema oscuro */
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -30,6 +32,7 @@
   }
 }
 
+/* Estas reglas cambian toda la paleta cuando el sistema pide tema oscuro y contradicen el fondo blanco del curso */
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
@@ -50,10 +53,12 @@
   }
 }
 
+/* El margen por defecto del navegador se quita para que App.css pueda controlar la caja completa */
 body {
   margin: 0;
 }
 
+/* Este selector repite la limpieza del margen y además fija un ancho de mil ciento veintiseis píxeles que el curso no pidió */
 #root {
   width: 1126px;
   max-width: 100%;
@@ -66,6 +71,7 @@ body {
   box-sizing: border-box;
 }
 
+/* Los títulos toman su propio tipo de letra y el color más oscuro de la paleta */
 h1,
 h2 {
   font-family: var(--heading);
@@ -73,6 +79,7 @@ h2 {
   color: var(--text-h);
 }
 
+/* El tamaño de cincuenta y seis píxeles del título principal se nota demasiado dentro del contenedor */
 h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
@@ -82,6 +89,8 @@ h1 {
     margin: 20px 0;
   }
 }
+
+/* Los subtítulos usan un tamaño intermedio y un interletrado leve para que respiren */
 h2 {
   font-size: 24px;
   line-height: 118%;
@@ -91,10 +100,12 @@ h2 {
     font-size: 20px;
   }
 }
+/* Quitar el margen de los párrafos aplasta el espaciado que el curso pidió para la tarjeta */
 p {
   margin: 0;
 }
 
+/* Este bloque sirve para el código en línea y no se usa dentro de la interfaz actual */
 code,
 .counter {
   font-family: var(--mono);
