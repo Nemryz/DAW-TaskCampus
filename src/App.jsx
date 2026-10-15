@@ -3,6 +3,7 @@ import Header from './components/Header'
 import TaskSummary from './components/TaskSummary'
 import TaskList from './components/TaskList'
 import ActionButton from './components/ActionButton'
+import Footer from './components/Footer'
 
 function App() {
   function reviewTasks() {
@@ -17,6 +18,7 @@ function App() {
       <TaskSummary total={3} />
       <TaskList title="Listado de tareas de hoy" />
       <ActionButton onReview={reviewTasks} />
+      <Footer course="Aplicaciones y Tecnologías de la Web" />
     </main>
   )
 }
