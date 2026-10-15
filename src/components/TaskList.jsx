@@ -2,10 +2,10 @@ const tasks = ['Aprender qué es React', 'Crear proyecto con Vite', 'Practicar J
 function showTask(taskName) {
     alert(`Has seleccionado la tarea: ${taskName}`)
   }
-function TaskList() {
+function TaskList({ title }) {
     return (
     <section className="card">
-      <h2 className="section-title">Listado de tareas</h2>
+      <h2 className="section-title">{title}</h2>
       <ul className="task-list">
           <li className="task-item">
             {tasks[0]} 
