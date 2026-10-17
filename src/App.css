@@ -300,3 +300,41 @@ body {
   color: #dc2626;
 }
 /* Fin estilos para los estados de TaskList.jsx */
+/* Estilos tutorial 12: formulario */
+.task-form {
+  display: flex;
+  gap: 10px;
+}
+.task-input {
+  flex: 1;
+  padding: 8px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  background-color: #ffffff;
+  color: #0f172a;
+  transition: border-color 0.2s;
+}
+.task-input:focus {
+  border-color: #2563eb;
+}
+.form-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+.form-exito {
+  color: #16a34a;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+/* Fin estilos tutorial 12: formulario */
+
+/* Estilos para los botones de cada tarea */
+.task-acciones {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+/* Fin estilos para los botones de cada tarea */

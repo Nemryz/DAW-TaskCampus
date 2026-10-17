@@ -5,8 +5,8 @@ import Button from "./Button";
 import Badge from "./Badge";
 import EmptyState from "./EmptyState";
 
-// Recibo la colección y los dos avisos desde App.jsx, que es quien coordina los datos
-const TaskList = ({ title, tareas, cargando, error }) => {
+// Recibo la colección, los avisos y las dos acciones desde App.jsx, que es quien coordina los datos
+const TaskList = ({ title, tareas, cargando, error, onToggle, onEliminar }) => {
   // Declaro el estado antes de cualquier retorno temprano porque los hooks no pueden llamarse de forma condicional
   const [filtro, setFiltro] = useState("todas");
 
@@ -81,6 +81,21 @@ const TaskList = ({ title, tareas, cargando, error }) => {
               <span className={tarea.completada ? "task-completada" : ""}>
                 {tarea.titulo}
               </span>
+            </div>
+
+            {/* Agrupo los botones a la derecha y paso la identidad local para que App sepa qué tarea cambió */}
+            <div className="task-acciones">
+              <Button
+                label={tarea.completada ? "Desmarcar" : "Completar"}
+                onClick={() => onToggle(tarea.idLocal, tarea.completada)}
+                variant={tarea.completada ? "success" : "primary"}
+              />
+              {/* Este botón no borra: solo avisa a App para que abra la ventana de confirmación */}
+              <Button
+                label="Eliminar"
+                onClick={() => onEliminar(tarea.idLocal)}
+                variant="danger"
+              />
             </div>
           </li>
         ))}
