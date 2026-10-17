@@ -74,3 +74,4 @@ function App() {
 }
 // Exporto el componente principal que main.jsx monta dentro del documento
 export default App
+
