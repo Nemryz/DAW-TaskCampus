@@ -1,25 +1,24 @@
-// Traigo el estado para recordar qué filtro eligió la persona
-import { useState } from "react";
 import Card from "./Card";
 import Button from "./Button";
 import TaskItem from "./TaskItem";
 import EmptyState from "./EmptyState";
 
-// Recibo la colección, los avisos y las acciones desde App.jsx, que es quien coordina los datos
-// La colección de operaciones en curso empieza vacía por si App todavía no la entrega
+// Recibo el filtro y la búsqueda desde App.jsx porque si vivieran aquí se perderían al cambiar de vista
+// La lista ya llega filtrada, por eso este componente solo la dibuja
 const TaskList = ({
   title,
   tareas,
   cargando,
   error,
+  filtro,
+  onCambiarFiltro,
+  busqueda,
+  onCambiarBusqueda,
   onToggle,
   onEditar,
   onEliminar,
   enOperacion = new Set(),
 }) => {
-  // Declaro el estado antes de cualquier retorno temprano porque los hooks no pueden llamarse de forma condicional
-  const [filtro, setFiltro] = useState("todas");
-
   // Retorno temprano mientras la petición viaja, así no se dibuja una lista vacía que confunda
   if (cargando) {
     return (
@@ -38,21 +37,8 @@ const TaskList = ({
     );
   }
 
-  // Si la colección llegó sin ninguna tarea, invito a crear la primera
-  if (tareas.length === 0) {
-    return (
-      <Card titulo={title}>
-        <EmptyState mensaje="No hay tareas. ¡Agrega la primera!" />
-      </Card>
-    );
-  }
-
-  // Calculo la lista filtrada en cada renderizado porque es un dato derivado y no un estado nuevo
-  const tareasFiltradas = tareas.filter((t) => {
-    if (filtro === "pendientes") return !t.completada;
-    if (filtro === "completadas") return t.completada;
-    return true;
-  });
+  // Distingo si la lista está vacía por los filtros o porque realmente no hay tareas
+  const hayFiltros = filtro !== "todas" || busqueda.trim() !== "";
 
   return (
     <Card titulo={title}>
@@ -60,29 +46,46 @@ const TaskList = ({
       <div className="filtros">
         <Button
           label="Todas"
-          onClick={() => setFiltro("todas")}
+          onClick={() => onCambiarFiltro("todas")}
           variant={filtro === "todas" ? "primary" : "secondary"}
         />
         <Button
           label="Pendientes"
-          onClick={() => setFiltro("pendientes")}
+          onClick={() => onCambiarFiltro("pendientes")}
           variant={filtro === "pendientes" ? "primary" : "secondary"}
         />
         <Button
           label="Completadas"
-          onClick={() => setFiltro("completadas")}
+          onClick={() => onCambiarFiltro("completadas")}
           variant={filtro === "completadas" ? "primary" : "secondary"}
         />
       </div>
 
+      {/* Campo controlado: su valor viene de App y cada tecla le avisa para que recalcule la lista */}
+      <div className="busqueda">
+        <input
+          type="text"
+          value={busqueda}
+          onChange={(e) => onCambiarBusqueda(e.target.value)}
+          placeholder="Buscar por título..."
+          className="task-input"
+        />
+      </div>
+
       {/* Comparo con cero de forma explícita porque así evito que React dibuje un número suelto */}
-      {tareasFiltradas.length === 0 && (
-        <EmptyState mensaje="No hay tareas en esta categoría." />
+      {tareas.length === 0 && (
+        <EmptyState
+          mensaje={
+            hayFiltros
+              ? "No hay tareas en esta categoría."
+              : "No hay tareas. ¡Agrega la primera!"
+          }
+        />
       )}
 
       <ul className="task-list">
         {/* Genero un componente por tarea y uso la identidad local como clave porque es única y no cambia */}
-        {tareasFiltradas.map((tarea) => (
+        {tareas.map((tarea) => (
           <TaskItem
             key={tarea.idLocal}
             tarea={tarea}
@@ -97,5 +100,5 @@ const TaskList = ({
   );
 };
 
-// Exporto el componente para que App.jsx lo monte junto al resumen
+// Exporto el componente para que la vista de tareas lo monte
 export default TaskList;

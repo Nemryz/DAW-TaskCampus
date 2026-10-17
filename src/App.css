@@ -343,3 +343,18 @@ body {
   cursor: pointer;
 }
 /* Fin estilos para la etiqueta con clic */
+/* Estilos para Navigation.jsx y la búsqueda */
+.navegacion {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.busqueda {
+  margin-bottom: 12px;
+}
+.busqueda .task-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+/* Fin estilos para Navigation.jsx y la búsqueda */
