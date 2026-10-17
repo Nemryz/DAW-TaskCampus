@@ -1,40 +1,104 @@
-// Guardo las tres tareas de la base dentro del propio archivo porque así llegó el proyecto entregado
-const tasks = ['Aprender qué es React', 'Crear proyecto con Vite', 'Practicar JSX']
-// Esta función abre una alerta del navegador y por ahora ocupa el lugar de la lógica real
-function showTask(taskName) {
-    alert(`Has seleccionado la tarea: ${taskName}`)
-  }
-// Recibo el título desde arriba porque App.jsx ya me lo pasa y antes estaba escrito dentro del marcado
-function TaskList({ title }) {
+import Card from "./Card";
+import Button from "./Button";
+import TaskItem from "./TaskItem";
+import EmptyState from "./EmptyState";
+
+// Recibo el filtro y la búsqueda desde App.jsx porque si vivieran aquí se perderían al cambiar de vista
+// La lista ya llega filtrada, por eso este componente solo la dibuja
+const TaskList = ({
+  title,
+  tareas,
+  cargando,
+  error,
+  filtro,
+  onCambiarFiltro,
+  busqueda,
+  onCambiarBusqueda,
+  onToggle,
+  onEditar,
+  onEliminar,
+  enOperacion = new Set(),
+}) => {
+  // Retorno temprano mientras la petición viaja, así no se dibuja una lista vacía que confunda
+  if (cargando) {
     return (
-    <section className="card">
-      {/* El encabezado usa la prop para que la misma lista sirva con otro texto */}
-      <h2 className="section-title">{title}</h2>
+      <Card titulo={title}>
+        <p className="estado-carga">Cargando tareas...</p>
+      </Card>
+    );
+  }
+
+  // Muestro el motivo del fallo en rojo en lugar de una lista vacía que haría pensar que no hay tareas
+  if (error) {
+    return (
+      <Card titulo={title}>
+        <p className="estado-error">Error: {error}</p>
+      </Card>
+    );
+  }
+
+  // Distingo si la lista está vacía por los filtros o porque realmente no hay tareas
+  const hayFiltros = filtro !== "todas" || busqueda.trim() !== "";
+
+  return (
+    <Card titulo={title}>
+      {/* Marco el filtro activo con otra variante para que se note cuál está elegido */}
+      <div className="filtros">
+        <Button
+          label="Todas"
+          onClick={() => onCambiarFiltro("todas")}
+          variant={filtro === "todas" ? "primary" : "secondary"}
+        />
+        <Button
+          label="Pendientes"
+          onClick={() => onCambiarFiltro("pendientes")}
+          variant={filtro === "pendientes" ? "primary" : "secondary"}
+        />
+        <Button
+          label="Completadas"
+          onClick={() => onCambiarFiltro("completadas")}
+          variant={filtro === "completadas" ? "primary" : "secondary"}
+        />
+      </div>
+
+      {/* Campo controlado: su valor viene de App y cada tecla le avisa para que recalcule la lista */}
+      <div className="busqueda">
+        <input
+          type="text"
+          value={busqueda}
+          onChange={(e) => onCambiarBusqueda(e.target.value)}
+          placeholder="Buscar por título..."
+          className="task-input"
+        />
+      </div>
+
+      {/* Comparo con cero de forma explícita porque así evito que React dibuje un número suelto */}
+      {tareas.length === 0 && (
+        <EmptyState
+          mensaje={
+            hayFiltros
+              ? "No hay tareas en esta categoría."
+              : "No hay tareas. ¡Agrega la primera!"
+          }
+        />
+      )}
+
       <ul className="task-list">
-          <li className="task-item">
-            {tasks[0]} 
-            {/* Uso una función flecha porque el manejador necesita saber qué tarea se está seleccionando */}
-            <button onClick={() => showTask(tasks[0])} className="task-button">
-                Seleccionar
-            </button>          
-          </li>
-          <li className="task-item">
-            {tasks[1]} 
-            {/* Repito la misma estructura cambiando únicamente el índice que se lee del arreglo */}
-            <button onClick={() => showTask(tasks[1])} className="task-button">
-                Seleccionar
-            </button>          
-          </li>
-          <li className="task-item">
-            {tasks[2]} 
-            {/* Esta tercera tarea es la última de la base y la etapa H2 sustituye todo el bloque por un recorrido */}
-            <button onClick={() => showTask(tasks[2])} className="task-button">
-                Seleccionar
-            </button>          
-          </li>          
+        {/* Genero un componente por tarea y uso la identidad local como clave porque es única y no cambia */}
+        {tareas.map((tarea) => (
+          <TaskItem
+            key={tarea.idLocal}
+            tarea={tarea}
+            enOperacion={enOperacion.has(tarea.idLocal)}
+            onAlternar={onToggle}
+            onEditar={onEditar}
+            onEliminar={onEliminar}
+          />
+        ))}
       </ul>
-    </section>
-  )
-}
-// Exporto el componente para que App.jsx lo monte junto al resumen
-export default TaskList
+    </Card>
+  );
+};
+
+// Exporto el componente para que la vista de tareas lo monte
+export default TaskList;

@@ -137,3 +137,224 @@ body {
   font-size: 0.875rem;
   color: #64748b;
 }
+/* Estilos para componente Button.jsx */
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+.btn-primary {
+  background-color: #1d4ed8;
+  color: #ffffff;
+}
+.btn-primary:hover {
+  background-color: #1e40af;
+}
+.btn-danger {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+.btn-danger:hover {
+  background-color: #b91c1c;
+}
+.btn-secondary {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+.btn-secondary:hover {
+  background-color: #cbd5e1;
+}
+.btn-success {
+  background-color: #198754;
+  color: #ffffff;
+}
+.btn-success:hover {
+  background-color: #146c43;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* Fin estilos para componente Button.jsx */
+
+/* Estilos para componente Badge.jsx */
+.badge {
+  display: inline-block;
+  background-color: #6b7280;
+  color: #ffffff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge-pendiente {
+  background-color: #f59e0b;
+}
+.badge-completada {
+  background-color: #16a34a;
+}
+.badge-en_progreso {
+  background-color: #2563eb;
+}
+/* Fin estilos para componente Badge.jsx */
+
+/* Estilos para componente Modal.jsx */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-box {
+  background: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+.modal-acciones {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+/* Fin estilos para componente Modal.jsx */
+
+/* Estilos para EmptyState.jsx y TaskList.jsx */
+.empty-state {
+  text-align: center;
+  color: #94a3b8;
+}
+.empty-state-icono {
+  font-size: 2rem;
+}
+.filtros {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.task-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.task-completada {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+/* Fin estilos para EmptyState.jsx y TaskList.jsx */
+/* Estilos tutorial 12: resumen */
+.summary-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.summary-numero {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin: 0;
+}
+.summary-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+.summary-completadas {
+  color: #16a34a;
+}
+.summary-pendientes {
+  color: #f59e0b;
+}
+.summary-mostrando {
+  color: #0f172a;
+}
+/* Fin estilos tutorial 12: resumen */
+
+/* Estilos para los estados de TaskList.jsx */
+.estado-carga {
+  text-align: center;
+  color: #64748b;
+}
+.estado-error {
+  text-align: center;
+  color: #dc2626;
+}
+/* Fin estilos para los estados de TaskList.jsx */
+/* Estilos tutorial 12: formulario */
+.task-form {
+  display: flex;
+  gap: 10px;
+}
+.task-input {
+  flex: 1;
+  padding: 8px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  background-color: #ffffff;
+  color: #0f172a;
+  transition: border-color 0.2s;
+}
+.task-input:focus {
+  border-color: #2563eb;
+}
+.form-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+.form-exito {
+  color: #16a34a;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+/* Fin estilos tutorial 12: formulario */
+
+/* Estilos para los botones de cada tarea */
+.task-acciones {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+/* Fin estilos para los botones de cada tarea */
+/* Estilos para la etiqueta con clic */
+.badge-clickable {
+  cursor: pointer;
+}
+/* Fin estilos para la etiqueta con clic */
+/* Estilos para Navigation.jsx y la búsqueda */
+.navegacion {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.busqueda {
+  margin-bottom: 12px;
+}
+.busqueda .task-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+/* Fin estilos para Navigation.jsx y la búsqueda */
