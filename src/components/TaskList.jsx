@@ -2,11 +2,21 @@
 import { useState } from "react";
 import Card from "./Card";
 import Button from "./Button";
-import Badge from "./Badge";
+import TaskItem from "./TaskItem";
 import EmptyState from "./EmptyState";
 
-// Recibo la colección, los avisos y las dos acciones desde App.jsx, que es quien coordina los datos
-const TaskList = ({ title, tareas, cargando, error, onToggle, onEliminar }) => {
+// Recibo la colección, los avisos y las acciones desde App.jsx, que es quien coordina los datos
+// La colección de operaciones en curso empieza vacía por si App todavía no la entrega
+const TaskList = ({
+  title,
+  tareas,
+  cargando,
+  error,
+  onToggle,
+  onEditar,
+  onEliminar,
+  enOperacion = new Set(),
+}) => {
   // Declaro el estado antes de cualquier retorno temprano porque los hooks no pueden llamarse de forma condicional
   const [filtro, setFiltro] = useState("todas");
 
@@ -71,33 +81,16 @@ const TaskList = ({ title, tareas, cargando, error, onToggle, onEliminar }) => {
       )}
 
       <ul className="task-list">
-        {/* Genero un elemento por tarea y uso la identidad local como clave porque es única y no cambia */}
+        {/* Genero un componente por tarea y uso la identidad local como clave porque es única y no cambia */}
         {tareasFiltradas.map((tarea) => (
-          <li key={tarea.idLocal} className="task-item">
-            <div className="task-info">
-              {/* La etiqueta se calcula desde el dato de la tarea, así no se guarda un estado aparte */}
-              <Badge texto={tarea.completada ? "completada" : "pendiente"} />
-              {/* Tacho el título cuando está completada mediante una clase de App.css */}
-              <span className={tarea.completada ? "task-completada" : ""}>
-                {tarea.titulo}
-              </span>
-            </div>
-
-            {/* Agrupo los botones a la derecha y paso la identidad local para que App sepa qué tarea cambió */}
-            <div className="task-acciones">
-              <Button
-                label={tarea.completada ? "Desmarcar" : "Completar"}
-                onClick={() => onToggle(tarea.idLocal, tarea.completada)}
-                variant={tarea.completada ? "success" : "primary"}
-              />
-              {/* Este botón no borra: solo avisa a App para que abra la ventana de confirmación */}
-              <Button
-                label="Eliminar"
-                onClick={() => onEliminar(tarea.idLocal)}
-                variant="danger"
-              />
-            </div>
-          </li>
+          <TaskItem
+            key={tarea.idLocal}
+            tarea={tarea}
+            enOperacion={enOperacion.has(tarea.idLocal)}
+            onAlternar={onToggle}
+            onEditar={onEditar}
+            onEliminar={onEliminar}
+          />
         ))}
       </ul>
     </Card>

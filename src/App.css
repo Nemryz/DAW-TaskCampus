@@ -338,3 +338,8 @@ body {
   flex-shrink: 0;
 }
 /* Fin estilos para los botones de cada tarea */
+/* Estilos para la etiqueta con clic */
+.badge-clickable {
+  cursor: pointer;
+}
+/* Fin estilos para la etiqueta con clic */
