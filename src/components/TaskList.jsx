@@ -1,40 +1,68 @@
-// Guardo las tres tareas de la base dentro del propio archivo porque así llegó el proyecto entregado
-const tasks = ['Aprender qué es React', 'Crear proyecto con Vite', 'Practicar JSX']
-// Esta función abre una alerta del navegador y por ahora ocupa el lugar de la lógica real
-function showTask(taskName) {
-    alert(`Has seleccionado la tarea: ${taskName}`)
-  }
-// Recibo el título desde arriba porque App.jsx ya me lo pasa y antes estaba escrito dentro del marcado
-function TaskList({ title }) {
-    return (
+// Traigo el estado para recordar qué filtro eligió la persona
+import { useState } from "react";
+import Button from "./Button";
+import Badge from "./Badge";
+import EmptyState from "./EmptyState";
+
+// Recibo el título y la colección desde App.jsx, que es quien coordina los datos
+// Los avisos de carga y error ya llegan, pero los empiezo a usar en la etapa H2
+const TaskList = ({ title, tareas }) => {
+  // El filtro vive aquí por ahora porque solo esta lista lo necesita
+  const [filtro, setFiltro] = useState("todas");
+
+  // Calculo la lista filtrada en cada renderizado porque es un dato derivado y no un estado nuevo
+  const tareasFiltradas = tareas.filter((t) => {
+    if (filtro === "pendientes") return !t.completada;
+    if (filtro === "completadas") return t.completada;
+    return true;
+  });
+
+  return (
     <section className="card">
-      {/* El encabezado usa la prop para que la misma lista sirva con otro texto */}
       <h2 className="section-title">{title}</h2>
+
+      {/* Uso el botón reutilizable y marco el filtro activo con otra variante para que se note cuál está elegido */}
+      <div className="filtros">
+        <Button
+          label="Todas"
+          onClick={() => setFiltro("todas")}
+          variant={filtro === "todas" ? "primary" : "secondary"}
+        />
+        <Button
+          label="Pendientes"
+          onClick={() => setFiltro("pendientes")}
+          variant={filtro === "pendientes" ? "primary" : "secondary"}
+        />
+        <Button
+          label="Completadas"
+          onClick={() => setFiltro("completadas")}
+          variant={filtro === "completadas" ? "primary" : "secondary"}
+        />
+      </div>
+
+      {/* Comparo con cero de forma explícita porque así evito que React dibuje un número suelto */}
+      {tareasFiltradas.length === 0 && (
+        <EmptyState mensaje="No hay tareas en esta categoría." />
+      )}
+
       <ul className="task-list">
-          <li className="task-item">
-            {tasks[0]} 
-            {/* Uso una función flecha porque el manejador necesita saber qué tarea se está seleccionando */}
-            <button onClick={() => showTask(tasks[0])} className="task-button">
-                Seleccionar
-            </button>          
+        {/* Genero un elemento por tarea y uso la identidad local como clave porque es única y no cambia */}
+        {tareasFiltradas.map((tarea) => (
+          <li key={tarea.idLocal} className="task-item">
+            <div className="task-info">
+              {/* La etiqueta se calcula desde el dato de la tarea, así no se guarda un estado aparte */}
+              <Badge texto={tarea.completada ? "completada" : "pendiente"} />
+              {/* Tacho el título cuando está completada mediante una clase de App.css */}
+              <span className={tarea.completada ? "task-completada" : ""}>
+                {tarea.titulo}
+              </span>
+            </div>
           </li>
-          <li className="task-item">
-            {tasks[1]} 
-            {/* Repito la misma estructura cambiando únicamente el índice que se lee del arreglo */}
-            <button onClick={() => showTask(tasks[1])} className="task-button">
-                Seleccionar
-            </button>          
-          </li>
-          <li className="task-item">
-            {tasks[2]} 
-            {/* Esta tercera tarea es la última de la base y la etapa H2 sustituye todo el bloque por un recorrido */}
-            <button onClick={() => showTask(tasks[2])} className="task-button">
-                Seleccionar
-            </button>          
-          </li>          
+        ))}
       </ul>
     </section>
-  )
-}
+  );
+};
+
 // Exporto el componente para que App.jsx lo monte junto al resumen
-export default TaskList
+export default TaskList;
