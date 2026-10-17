@@ -256,3 +256,47 @@ body {
   color: #94a3b8;
 }
 /* Fin estilos para EmptyState.jsx y TaskList.jsx */
+/* Estilos tutorial 12: resumen */
+.summary-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.summary-numero {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin: 0;
+}
+.summary-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+.summary-completadas {
+  color: #16a34a;
+}
+.summary-pendientes {
+  color: #f59e0b;
+}
+.summary-mostrando {
+  color: #0f172a;
+}
+/* Fin estilos tutorial 12: resumen */
+
+/* Estilos para los estados de TaskList.jsx */
+.estado-carga {
+  text-align: center;
+  color: #64748b;
+}
+.estado-error {
+  text-align: center;
+  color: #dc2626;
+}
+/* Fin estilos para los estados de TaskList.jsx */

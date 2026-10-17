@@ -1,14 +1,41 @@
 // Traigo el estado para recordar qué filtro eligió la persona
 import { useState } from "react";
+import Card from "./Card";
 import Button from "./Button";
 import Badge from "./Badge";
 import EmptyState from "./EmptyState";
 
-// Recibo el título y la colección desde App.jsx, que es quien coordina los datos
-// Los avisos de carga y error ya llegan, pero los empiezo a usar en la etapa H2
-const TaskList = ({ title, tareas }) => {
-  // El filtro vive aquí por ahora porque solo esta lista lo necesita
+// Recibo la colección y los dos avisos desde App.jsx, que es quien coordina los datos
+const TaskList = ({ title, tareas, cargando, error }) => {
+  // Declaro el estado antes de cualquier retorno temprano porque los hooks no pueden llamarse de forma condicional
   const [filtro, setFiltro] = useState("todas");
+
+  // Retorno temprano mientras la petición viaja, así no se dibuja una lista vacía que confunda
+  if (cargando) {
+    return (
+      <Card titulo={title}>
+        <p className="estado-carga">Cargando tareas...</p>
+      </Card>
+    );
+  }
+
+  // Muestro el motivo del fallo en rojo en lugar de una lista vacía que haría pensar que no hay tareas
+  if (error) {
+    return (
+      <Card titulo={title}>
+        <p className="estado-error">Error: {error}</p>
+      </Card>
+    );
+  }
+
+  // Si la colección llegó sin ninguna tarea, invito a crear la primera
+  if (tareas.length === 0) {
+    return (
+      <Card titulo={title}>
+        <EmptyState mensaje="No hay tareas. ¡Agrega la primera!" />
+      </Card>
+    );
+  }
 
   // Calculo la lista filtrada en cada renderizado porque es un dato derivado y no un estado nuevo
   const tareasFiltradas = tareas.filter((t) => {
@@ -18,10 +45,8 @@ const TaskList = ({ title, tareas }) => {
   });
 
   return (
-    <section className="card">
-      <h2 className="section-title">{title}</h2>
-
-      {/* Uso el botón reutilizable y marco el filtro activo con otra variante para que se note cuál está elegido */}
+    <Card titulo={title}>
+      {/* Marco el filtro activo con otra variante para que se note cuál está elegido */}
       <div className="filtros">
         <Button
           label="Todas"
@@ -60,7 +85,7 @@ const TaskList = ({ title, tareas }) => {
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   );
 };
 
