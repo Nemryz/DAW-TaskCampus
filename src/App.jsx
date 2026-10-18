@@ -8,7 +8,7 @@ import Modal from './components/Modal'
 import useTareas from './hooks/useTareas'
 import ResumenView from './views/ResumenView'
 import TareasView from './views/TareasView'
-import NuevaView from './views/NuevaView'
+import NuevaTareaView from './views/NuevaTareaView'
 
 function App() {
   // El gancho entrega los datos y las operaciones, y este archivo decide a quién le toca cada una
@@ -111,7 +111,9 @@ function App() {
           title="Listado de tareas"
           tareas={tareasFiltradas}
           cargando={cargando}
-          error={error}
+          // Entrego el error como nulo porque este archivo ya lo muestra arriba, y la lista se queda visible
+          // Si una escritura falla, el aviso explica el fallo y las tareas siguen a la vista para reintentar
+          error={null}
           filtro={filtro}
           onCambiarFiltro={setFiltro}
           busqueda={busqueda}
@@ -126,7 +128,7 @@ function App() {
       {vistaActiva === 'nueva' && (
         // Entrego el error y el éxito como nulos porque este archivo ya los muestra arriba con el matiz del aviso
         // El formulario conserva su propia validación local, que nace en la pantalla y no viene del servidor
-        <NuevaView onAgregar={crearTarea} creando={creando} error={null} exito={false} />
+        <NuevaTareaView onAgregar={crearTarea} creando={creando} error={null} exito={false} />
       )}
 
       {/* La ventana se monta una sola vez fuera de las vistas, porque el borrado se pide desde la vista de tareas */}
