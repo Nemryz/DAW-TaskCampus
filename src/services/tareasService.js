@@ -54,3 +54,19 @@ export async function deleteTarea(idRemoto) {
   // Valido igual que en las otras operaciones para no presentar un borrado fallido como exitoso
   if (!res.ok) throw new Error(`Error al eliminar la tarea (HTTP ${res.status})`)
 }
+
+// Esta función modifica solo algunos campos de una tarea y deja intactos los que no viaja en el cuerpo
+// El método de actualización parcial se distingue del reemplazo porque no borra lo que omite
+export async function patchTarea(idRemoto, cambios) {
+  const res = await fetch(`${API_URL}/${idRemoto}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(cambios),
+  })
+
+  // Aplico la misma validación que en el reemplazo, porque un fallo al editar también debe llegar a la interfaz
+  if (!res.ok) throw new Error(`Error al editar la tarea (HTTP ${res.status})`)
+
+  // Devuelvo la respuesta porque quien edita necesita saber que el servidor aceptó el cambio
+  return res.json()
+}
