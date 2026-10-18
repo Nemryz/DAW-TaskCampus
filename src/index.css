@@ -1,122 +1,29 @@
-/* Esta hoja es la que menos controlamos porque es la plantilla que el generador dejó en la base */
-/* Declara el modo claro y el modo oscuro, y esto hace que la aplicación se ponga oscura con Windows en tema oscuro */
+/* Esta hoja guarda lo global, porque el diseño de cada pieza vive en App.css */
+
+/* Declaro la escala de azules que pide el tutorial y la dejo disponible para cualquier hoja */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --fondo: #ffffff;
+  --texto: #0f172a;
+  --texto-suave: #64748b;
+  --primario: #2563eb;
+  --primario-oscuro: #1d4ed8;
+  --borde: #dbeafe;
+  --borde-tenue: #bfdbfe;
+  --superficie: #eff6ff;
+  --exito: #16a34a;
+  --advertencia: #f59e0b;
+  --peligro: #dc2626;
+  --tipo: Arial, Helvetica, sans-serif;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  font-family: var(--tipo);
+  /* Mantengo el tamaño base del proyecto porque toda la escala de rem depende de este valor */
+  font-size: 18px;
+  line-height: 145%;
+  /* Fuerzo el modo claro porque el automático tornaba oscura la interfaz en equipos con tema oscuro */
+  color-scheme: only light;
 }
 
-/* Estas reglas cambian toda la paleta cuando el sistema pide tema oscuro y contradicen el fondo blanco del curso */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-/* El margen por defecto del navegador se quita para que App.css pueda controlar la caja completa */
+/* Quito el margen que el navegador aplica solo, para que el contenedor controle toda la caja */
 body {
   margin: 0;
-}
-
-/* Este selector repite la limpieza del margen y además fija un ancho de mil ciento veintiseis píxeles que el curso no pidió */
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-/* Los títulos toman su propio tipo de letra y el color más oscuro de la paleta */
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-/* El tamaño de cincuenta y seis píxeles del título principal se nota demasiado dentro del contenedor */
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-
-/* Los subtítulos usan un tamaño intermedio y un interletrado leve para que respiren */
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-/* Quitar el margen de los párrafos aplasta el espaciado que el curso pidió para la tarjeta */
-p {
-  margin: 0;
-}
-
-/* Este bloque sirve para el código en línea y no se usa dentro de la interfaz actual */
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
 }
