@@ -112,7 +112,7 @@ taskcampus/
     ├── views/                    las tres vistas obligatorias
     │   ├── ResumenView.jsx
     │   ├── TareasView.jsx
-    │   └── NuevaView.jsx
+    │   └── NuevaTareaView.jsx
     ├── hooks/
     │   └── useTareas.js          estado y operaciones de las tareas
     └── services/
@@ -238,7 +238,7 @@ Las cuatro etapas entraron en una sola solicitud de elevación, con cinco commit
 
 Respeto de la frontera. Santiago no modificó `src/index.css` ni `src/App.jsx`, salvo un salto de línea final. Esa era una condición expresa del contrato, porque el contrato prohibía tocar el archivo de coordinación.
 
-Cuatro observaciones menores quedan acordadas con él. La primera es que el archivo de la vista nueva se llama `NuevaView.jsx` y el contrato decía `NuevaTareaView.jsx`. La segunda es que la clase de estilo de la insignia local todavía no existe. La tercera es que sus archivos terminan las líneas con punto y coma mientras el resto del proyecto no lo hace. La cuarta es que el botón no declara tipo por defecto, aunque en la práctica el formulario funciona porque el valor por defecto del navegador resulta ser el necesario.
+Cuatro observaciones menores se revisaron con él y una de ellas quedó resuelta. El archivo de la vista nueva pasó a llamarse `NuevaTareaView.jsx` para coincidir con el contrato, y con ese cambio se actualizaron el nombre del componente, la importación en el archivo raíz y la estructura de este documento. Quedan tres acordadas para más adelante. La primera de las que faltan es que la clase de estilo de la insignia local todavía no existe. La segunda es que sus archivos terminan las líneas con punto y coma mientras el resto del proyecto no lo hace. La tercera es que el botón no declara tipo por defecto, aunque en la práctica el formulario funciona porque el valor por defecto del navegador resulta ser el necesario.
 
 ## Etapas de trabajo
 
