@@ -1,77 +1,150 @@
-// Traigo el efecto de React y el hook de tareas, dado que el componente raíz deja de llevar los datos escritos a mano
-import { useEffect } from 'react'
+// Traigo el estado de React y el gancho de tareas, porque el componente raíz coordina y no calcula
+import { useEffect, useState } from 'react'
 import './App.css'
 import Header from './components/Header'
-import TaskSummary from './components/TaskSummary'
-import TaskList from './components/TaskList'
 import Footer from './components/Footer'
+import Navigation from './components/Navigation'
+import Modal from './components/Modal'
 import useTareas from './hooks/useTareas'
+import ResumenView from './views/ResumenView'
+import TareasView from './views/TareasView'
+import NuevaView from './views/NuevaView'
 
 function App() {
-  // Obtengo la colección y los dos avisos que necesito para distinguir la carga del fallo
-  // Las tres operaciones de escritura ya existen en el gancho, pero todavía nadie las invoca desde aquí
-  const { tareas, cargando, error } = useTareas()
+  // El gancho entrega los datos y las operaciones, y este archivo decide a quién le toca cada una
+  const {
+    tareas,
+    cargando,
+    error,
+    exito,
+    creando,
+    enOperacion,
+    crearTarea,
+    actualizarTarea,
+    editarTitulo,
+    eliminarTarea,
+  } = useTareas()
 
-  // Zona reservada para el estado de la tarea señalada, que se declara aquí arriba cuando llegue la etapa H3
-  // El estado guardará la identidad local de la tarea que la persona pidió borrar, o nulo cuando no haya ninguna
+  // Guardo el filtro de estado aquí y no dentro de la vista, porque la vista se desmonta al cambiar
+  const [filtro, setFiltro] = useState('todas')
 
-  // Zona reservada para los manejadores de escritura, que también viven en este archivo porque es el coordinador
-  // Aquí se conectarán crearTarea con el formulario, actualizarTarea con el cambio de estado y eliminarTarea con la confirmación
-  // Ninguno de los dos se conecta todavía porque los componentes que los consumen llegan en las etapas H3 y H4
-  // Derivo los contadores desde la colección porque el resumen no debe guardar su propia copia de los datos
-  // El monto mostrado y el filtro activo son provisionales hasta la etapa N4, cuando existan ambos conceptos
+  // Guardo el texto de búsqueda por la misma razón que el filtro, para que sobreviva al cambio de vista
+  const [busqueda, setBusqueda] = useState('')
+
+  // Guardo la vista activa con uno de los tres valores que reconoce el enunciado
+  const [vistaActiva, setVistaActiva] = useState('resumen')
+
+  // Guardo la identidad de la tarea que la persona pidió borrar, y nulo significa que no hay ninguna
+  const [tareaAEliminar, setTareaAEliminar] = useState(null)
+
+  // Derivo el total y los contadores desde la colección, porque el resumen no debe guardar su propia copia
   const completadas = tareas.filter((t) => t.completada).length
   const pendientes = tareas.length - completadas
-  const mostradas = tareas.length
-  const filtroActual = 'todas'
+
+  // Derivo la lista visible combinando el filtro de estado con el texto de búsqueda
+  // La búsqueda se lleva a minúsculas en ambos lados para que no distinga mayúsculas de minúsculas
+  const tareasFiltradas = tareas.filter((t) => {
+    const coincideEstado =
+      filtro === 'todas' ||
+      (filtro === 'pendientes' && !t.completada) ||
+      (filtro === 'completadas' && t.completada)
+    const coincideTexto = t.titulo.toLowerCase().includes(busqueda.trim().toLowerCase())
+    return coincideEstado && coincideTexto
+  })
+
+  // La cantidad mostrada sale de la lista ya filtrada y por eso refleja los dos criterios juntos
+  const mostradas = tareasFiltradas.length
+  const filtroActual = filtro
 
   // Escribo la cantidad de pendientes en el título de la pestaña usando el valor ya derivado
-  // Depender del contador y no de la colección evita recalcular el mismo dato en dos lugares
   useEffect(() => {
     document.title = `TaskCampus (${pendientes} pendientes)`
   }, [pendientes])
 
+  // Este manejador invierte la condición de la tarea que la persona alternó desde la insignia o el botón
+  const handleAlternar = (idLocal, completadaActual) => {
+    actualizarTarea(idLocal, { completada: !completadaActual })
+  }
+
+  // Este manejador abre la ventana de confirmación guardando solo la identidad, sin quitar la tarea todavía
+  const handleSolicitarBorrado = (idLocal) => {
+    setTareaAEliminar(idLocal)
+  }
+
+  // Confirmar borra de verdad y cerrar la ventana, porque cancelar nunca llega hasta aquí
+  const handleConfirmarBorrado = () => {
+    if (tareaAEliminar !== null) eliminarTarea(tareaAEliminar)
+    setTareaAEliminar(null)
+  }
+
+  // Cancelar solo cierra la ventana y deja la tarea intacta en la colección
+  const handleCancelarBorrado = () => {
+    setTareaAEliminar(null)
+  }
+
+  // Busco el título original para que el mensaje de la ventana hable de la tarea correcta y no de su posición
+  const tareaAEliminarInfo = tareas.find((t) => t.idLocal === tareaAEliminar)
+
   return (
     <main className="app-container">
-      {/* La cabecera sigue recibiendo sus textos por props desde este archivo */}
-      <Header
-        title="TaskCampus"
-        description="Gestor de tareas académicas"
+      {/* La cabecera y la navegación quedan siempre visibles, porque el enunciado las exige en las tres vistas */}
+      <Header title="TaskCampus" description="Gestor de tareas académicas" />
+      <Navigation vistaActiva={vistaActiva} onCambiarVista={setVistaActiva} />
+
+      {/* Los avisos de error y de éxito viven aquí porque son comunes a las tres vistas */}
+      {error && <p className="estado-error">Error: {error}</p>}
+      {exito && <p className="estado-exito">{exito}</p>}
+
+      {/* Una sola vista se monta a la vez y las tareas viven en este archivo, no dentro de cada vista */}
+      {vistaActiva === 'resumen' && (
+        <ResumenView
+          total={tareas.length}
+          completadas={completadas}
+          pendientes={pendientes}
+          mostradas={mostradas}
+          filtroActual={filtroActual}
+        />
+      )}
+
+      {vistaActiva === 'tareas' && (
+        <TareasView
+          title="Listado de tareas"
+          tareas={tareasFiltradas}
+          cargando={cargando}
+          error={error}
+          filtro={filtro}
+          onCambiarFiltro={setFiltro}
+          busqueda={busqueda}
+          onCambiarBusqueda={setBusqueda}
+          onToggle={handleAlternar}
+          onEditar={editarTitulo}
+          onEliminar={handleSolicitarBorrado}
+          enOperacion={enOperacion}
+        />
+      )}
+
+      {vistaActiva === 'nueva' && (
+        // Entrego el error y el éxito como nulos porque este archivo ya los muestra arriba con el matiz del aviso
+        // El formulario conserva su propia validación local, que nace en la pantalla y no viene del servidor
+        <NuevaView onAgregar={crearTarea} creando={creando} error={null} exito={false} />
+      )}
+
+      {/* La ventana se monta una sola vez fuera de las vistas, porque el borrado se pide desde la vista de tareas */}
+      <Modal
+        visible={tareaAEliminar !== null}
+        mensaje={
+          tareaAEliminarInfo
+            ? `¿Seguro que deseas eliminar la tarea "${tareaAEliminarInfo.titulo}"?`
+            : '¿Seguro que deseas eliminar esta tarea?'
+        }
+        onConfirmar={handleConfirmarBorrado}
+        onCancelar={handleCancelarBorrado}
       />
-      {/* El resumen recibe los cuatro contadores ya calculados desde la colección de este archivo */}
-      <TaskSummary
-        total={tareas.length}
-        completadas={completadas}
-        pendientes={pendientes}
-        mostradas={mostradas}
-        filtroActual={filtroActual}
-      />
-
-      {/* Este aviso solo aparece mientras la petición viaja y desaparece al terminar */}
-      {cargando && <p>Cargando tareas...</p>}
-
-      {/* Aquí muestro el motivo del fallo en lugar de una lista vacía que haría pensar que no hay tareas */}
-      {error && <p>Error al cargar las tareas: {error}</p>}
-
-      {/* Le entrego la colección y los dos avisos aunque hoy no los use, de este modo la etapa H2 recorre los datos */}
-      <TaskList
-        title="Listado de tareas de hoy"
-        tareas={tareas}
-        cargando={cargando}
-        error={error}
-      />
-
-      {/* El botón de alerta se retiró de aquí porque el laboratorio no admite alertas y H2 borra el archivo */}
-
-      {/* Zona reservada para la ventana de confirmación del borrado, que llega en la etapa H3
-          Este es el lugar exacto donde se monta y estas son las propiedades que debe recibir
-          El booleano de visibilidad sale de comparar el estado de la tarea señalada con el valor nulo
-          El mensaje de confirmación y las dos acciones de aceptar y cancelar los entrega el componente mismo */}
 
       <Footer course="Aplicaciones y Tecnologías de la Web" />
     </main>
   )
 }
+
 // Exporto el componente principal que main.jsx monta dentro del documento
 export default App
-
