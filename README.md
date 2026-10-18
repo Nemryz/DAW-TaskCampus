@@ -101,14 +101,25 @@ taskcampus/
     │   ├── Footer.jsx
     │   ├── TaskSummary.jsx
     │   ├── TaskList.jsx
-    │   └── ActionButton.jsx
+    │   ├── TaskItem.jsx
+    │   ├── TaskForm.jsx
+    │   ├── Button.jsx
+    │   ├── Badge.jsx
+    │   ├── Card.jsx
+    │   ├── Modal.jsx
+    │   ├── EmptyState.jsx
+    │   └── Navigation.jsx
+    ├── views/                    las tres vistas obligatorias
+    │   ├── ResumenView.jsx
+    │   ├── TareasView.jsx
+    │   └── NuevaView.jsx
     ├── hooks/
     │   └── useTareas.js          estado y operaciones de las tareas
     └── services/
         └── tareasService.js      comunicación con la API
 ```
 
-La carpeta de vistas todavía no existe, porque las tres vistas obligatorias llegan en la última etapa de cada integrante.
+Los componentes reutilizables y las tres vistas ya existen. Lo que falta es el montaje, porque el componente raíz todavía no declara el estado de la vista activa ni conecta los manejadores de escritura, y esa conexión es la última etapa de trabajo.
 
 ## Arquitectura en capas
 
@@ -137,33 +148,35 @@ Los tutoriales 08, 09 y 12 aparecen repartidos entre las dos capas. Esa coincide
 | --- | --- | --- | --- | --- |
 | 04 | Proyecto creado con el generador de Vite para React en JavaScript, punto de entrada HTML y montaje en el elemento raíz | Nada | Base entregada | `index.html`, `src/main.jsx` |
 | 05 | Componentes separados, propiedades desestructuradas, función recibida como propiedad y eventos con parámetro. Se agregó el componente de pie de página y se corrigió la propiedad que el listado recibía sin usar | Nada | Base entregada y completada por Ignacio | `Header.jsx`, `Footer.jsx`, `TaskSummary.jsx`, `TaskList.jsx` |
-| 06 | Estilos externos con modificadores de clase para contenedor, tarjeta, título, listado, tarea y botones, con el alineamiento de los controles resuelto | Limpiar la hoja de estilos globales que dejó el generador | Ignacio | `src/index.css` |
-| 07 | Estado de la colección en el componente raíz, efecto de montaje, actualización inmutable de objetos y arreglos, y las tres operaciones de escritura | Identidad dual aplicada a las operaciones y bloqueo de operaciones en curso | Ignacio | `src/App.jsx`, `src/hooks/useTareas.js` |
-| 08 | Cálculo de los contadores como datos derivados dentro del componente raíz | Recorrido de la lista con clave estable, filtros por estado y renderizado condicional | Ignacio ya hizo la parte de datos y Santiago hace la de presentación | `src/App.jsx`, `TaskList.jsx`, `TaskSummary.jsx` |
-| 09 | Carga inicial desde la API y encapsulado de toda la lógica en un gancho propio | Formulario controlado con validación de títulos | Ignacio ya hizo la carga y Santiago hace el formulario | `src/hooks/useTareas.js`, `TaskForm.jsx` |
-| 10 | Nada | Componentes de botón, insignia, tarjeta, modal y estado vacío, migración de controles y estilos | Santiago | cinco componentes nuevos y `src/App.css` |
-| 11 | Servicio con los cuatro verbos y gancho con las tres operaciones de escritura | Presentación de los estados de carga, error y éxito en pantalla | Ignacio ya hizo la capa de datos y Santiago hace la presentación | `tareasService.js`, `useTareas.js` |
-| 12 | Coordinación del estado compartido y separación entre gancho y servicio | Actualización parcial, bloqueo de operaciones y las tres vistas con su navegación | Ignacio y Santiago | `src/App.jsx`, `src/views/` |
+| 06 | Estilos externos con modificadores de clase para contenedor, tarjeta, título, listado, tarea y botones, con el alineamiento de los controles resuelto. Se limpió la hoja de estilos globales que había dejado el generador y se forzó el modo claro | Nada | Ignacio | `src/App.css`, `src/index.css` |
+| 07 | Estado de la colección en el componente raíz, efecto de montaje, actualización inmutable de objetos y arreglos, y las tres operaciones de escritura contra la API | Identidad dual aplicada a las operaciones y bloqueo de operaciones en curso | Ignacio | `src/App.jsx`, `src/hooks/useTareas.js` |
+| 08 | Recorrido de la lista con clave estable, filtros por estado, búsqueda por texto, tres estados de interfaz y los cuatro contadores derivados en el componente raíz | Conectar el filtro y la búsqueda al componente raíz para que la lista deje de recibir siempre la colección completa | Ignacio | `src/App.jsx`, `TaskList.jsx`, `TaskSummary.jsx` |
+| 09 | Carga inicial desde la API, encapsulado de toda la lógica en un gancho propio y formulario controlado con validación de títulos | Conectar el formulario al componente raíz para que la creación llegue al gancho | Ignacio | `src/hooks/useTareas.js`, `TaskForm.jsx` |
+| 10 | Los cinco componentes reutilizables, la migración de los controles nativos y los estilos asociados | Nada | Santiago | `Button.jsx`, `Badge.jsx`, `Card.jsx`, `Modal.jsx`, `EmptyState.jsx`, `src/App.css` |
+| 11 | Servicio con los cuatro verbos, gancho con las tres operaciones de escritura y presentación de los estados de carga, error y resultado vacío | Presentar el aviso de escritura en curso y el aviso de éxito | Ignacio y Santiago | `tareasService.js`, `useTareas.js`, `TaskList.jsx` |
+| 12 | Separación entre gancho y servicio, componente de tarea con edición en línea e insignia local pulsable, navegación con los tres valores y las tres vistas | Montar las tres vistas desde el componente raíz y conservar filtros y búsqueda al cambiar de vista | Ignacio | `src/App.jsx`, `src/views/`, `Navigation.jsx` |
 
 ### Requisitos y quién los cierra
 
-| Código | Requisito | Responsable |
-| --- | --- | --- |
-| RF01 | Cargar las primeras diez tareas desde la API | Ignacio, en N1 |
-| RF02 | Mostrar cada tarea con título, estado y controles, generado desde los datos | Santiago, en H2 |
-| RF03 | Crear tareas mediante un formulario controlado | Santiago, en H3 |
-| RF04 | Validar los títulos al crear y al editar | Santiago, en H3 |
-| RF05 | Alternar entre pendiente y completada | Santiago aporta la pantalla e Ignacio aporta la operación |
-| RF06 | Editar el título en línea | Santiago aporta la pantalla e Ignacio aporta la operación parcial |
-| RF07 | Eliminar con confirmación | Santiago, en H3 |
-| RF08 | Filtrar por todas, pendientes y completadas | Santiago, en H2 |
-| RF09 | Buscar por texto del título | Santiago, en H4 |
-| RF10 | Mostrar un resumen actualizado | Santiago, en H2 |
-| RF11 | Informar carga, errores y resultados vacíos | Ignacio entrega los datos y Santiago las tres pantallas |
-| RF12 | Informar operaciones en curso | Ignacio entrega el estado y Santiago lo refleja en los controles |
-| RF13 | Navegar entre las tres vistas | Santiago aporta los componentes e Ignacio aporta la coordinación |
+| Código | Requisito | Responsable | Estado |
+| --- | --- | --- | --- |
+| RF01 | Cargar las primeras diez tareas desde la API | Ignacio, en N1 | Cerrado y verificado |
+| RF02 | Mostrar cada tarea con título, estado y controles, generado desde los datos | Santiago, en H2 | Cerrado, falta el montaje |
+| RF03 | Crear tareas mediante un formulario controlado | Santiago, en H3 | Cerrado, falta el montaje |
+| RF04 | Validar los títulos al crear y al editar | Santiago, en H3 | Cerrado en la pantalla, falta la conexión |
+| RF05 | Alternar entre pendiente y completada | Santiago aporta la pantalla e Ignacio aporta la operación | Cerrado en la pantalla, falta la conexión |
+| RF06 | Editar el título en línea | Santiago aporta la pantalla e Ignacio aporta la operación parcial | Falta la actualización parcial en el gancho |
+| RF07 | Eliminar con confirmación | Santiago, en H3 | Cerrado en la pantalla, falta la conexión |
+| RF08 | Filtrar por todas, pendientes y completadas | Santiago, en H2 | Cerrado en la pantalla, falta el estado del filtro |
+| RF09 | Buscar por texto del título | Santiago, en H4 | Cerrado en la pantalla, falta el estado de búsqueda |
+| RF10 | Mostrar un resumen actualizado | Santiago, en H2 | Cerrado, los contadores ya se derivan |
+| RF11 | Informar carga, errores y resultados vacíos | Ignacio entrega los datos y Santiago las tres pantallas | Cerrado y verificado |
+| RF12 | Informar operaciones en curso | Ignacio entrega el estado y Santiago lo refleja en los controles | Falta el conjunto de operaciones en vuelo |
+| RF13 | Navegar entre las tres vistas | Santiago aporta los componentes e Ignacio aporta la coordinación | Los componentes existen, falta el montaje |
 
 Varios requisitos se cierran de forma conjunta porque la lógica la aporta una capa y la pantalla la aporta la otra. Ninguno se resuelve con trabajo de una sola persona.
+
+La columna de estado revela un patrón útil para la entrega. Los componentes de pantalla están terminados en su totalidad, mientras que lo que falta está concentrado en una sola pieza, que es el componente raíz. Ese archivo es el único que ninguno de los dos editó de forma paralela y por eso las pantallas quedaron esperando la conexión.
 
 
 ### Investigación y aplicación al proyecto
@@ -208,24 +221,24 @@ La regla que se aplicó tiene dos mitades. Cada tarea mantiene una identidad loc
 
 La evidencia se comprueba creando dos tareas consecutivas y verificando que se distinguen sin repetir clave, y comprobando además que un fallo remoto no altera silenciosamente otra tarea. El proyecto aporta un ejemplo concreto de por qué la identidad remota queda en nulo. La lectura entrega diez tareas cuya identidad del servidor se convierte a texto, de modo que las claves son siempre cadenas y nunca colisionan con las que genera la aplicación. Una tarea creada durante la sesión recibe un prefijo y la hora actual, y la respuesta del servidor a esa creación siempre devuelve el mismo número, que no representa ningún recurso real, por lo que esa respuesta no se conserva.
 
-La construcción de la identidad ocurre en `src/hooks/useTareas.js` y la decisión de omitir la petición remota ocurre en las operaciones de actualizar y eliminar, mientras que la insignia que informa que la tarea es local llega con la última etapa de Santiago. La fuente consultada es la guía oficial del simulador de API, disponible en jsonplaceholder punto typicode punto com dentro de su sección de guía.
+La construcción de la identidad ocurre en `src/hooks/useTareas.js` y la decisión de omitir la petición remota ocurre en las operaciones de actualizar y eliminar. La insignia que informa que la tarea es local ya existe en el componente de tarea, que la muestra junto al estado. La fuente consultada es la guía oficial del simulador de API, disponible en jsonplaceholder punto typicode punto com dentro de su sección de guía.
 
 ### Tareas asignadas a Santiago
 
-Esta sección es la guía de trabajo de Santiago. Cada tarea trae la referencia del tutorial donde se explica, los códigos de requisito que cierra y la forma en que se comprueba.
+Esta sección es la guía de trabajo de Santiago. Cada tarea trae la referencia del tutorial donde se explica, los códigos de requisito que cierra y la forma en que se comprueba. Las cuatro etapas ya están integradas en la rama principal.
 
-| Etapa | Qué construye | Referencia | Archivos | Cómo se comprueba |
+| Etapa | Qué construye | Referencia | Archivos | Estado |
 | --- | --- | --- | --- | --- |
-| H1 | Botón configurable, insignia, tarjeta, modal y estado vacío, migración de los controles nativos y estilos asociados | Tutorial 10, criterio de organización y reutilización | `Button.jsx`, `Badge.jsx`, `Card.jsx`, `Modal.jsx`, `EmptyState.jsx`, `TaskList.jsx`, `App.css` | El botón aparece en más de un lugar y la aplicación sigue blanca con el sistema en modo oscuro |
-| H2 | Recorrido de la lista con clave estable, filtros por estado, contadores en el resumen y los tres estados de interfaz | Tutorial 08, RF02, RF08, RF10, RF11, segundo tema de investigación | `TaskList.jsx`, `TaskSummary.jsx`, `App.css` y borrar `ActionButton.jsx` | Diez tareas reales en pantalla, consola sin avisos de clave y búsqueda de alertas sin resultados |
-| H3 | Formulario controlado con validación, botones de operación y ventana de confirmación del borrado | Tutorial 09 y 11, RF03, RF04, RF05, RF07 | `TaskForm.jsx`, `TaskList.jsx`, `App.css` | Un título vacío no guarda y avisa, y cancelar el borrado conserva la tarea |
-| H4 | Edición del título en línea, búsqueda por texto, botón de insignia para tareas locales, navegación y las tres vistas | Tutorial 12, RF06, RF09, RF12, RF13, primer tema de investigación | `TaskItem.jsx`, `Navigation.jsx`, `src/views/`, `TaskList.jsx`, `TaskSummary.jsx`, `App.css` | La búsqueda ignora mayúsculas, un título vacío revierte al anterior y las tres vistas conservan tareas y filtros |
+| H1 | Botón configurable, insignia, tarjeta, modal y estado vacío, migración de los controles nativos y estilos asociados | Tutorial 10, criterio de organización y reutilización | `Button.jsx`, `Badge.jsx`, `Card.jsx`, `Modal.jsx`, `EmptyState.jsx`, `TaskList.jsx`, `App.css` | Entregada |
+| H2 | Recorrido de la lista con clave estable, filtros por estado, contadores en el resumen y los tres estados de interfaz | Tutorial 08, RF02, RF08, RF10, RF11, segundo tema de investigación | `TaskList.jsx`, `TaskSummary.jsx`, `App.css` y borrar `ActionButton.jsx` | Entregada |
+| H3 | Formulario controlado con validación, botones de operación y ventana de confirmación del borrado | Tutorial 09 y 11, RF03, RF04, RF05, RF07 | `TaskForm.jsx`, `TaskList.jsx`, `App.css` | Entregada |
+| H4 | Edición del título en línea, insignia de tarea local, búsqueda por texto, navegación y las tres vistas | Tutorial 12, RF06, RF09, RF12, RF13, primer tema de investigación | `TaskItem.jsx`, `Navigation.jsx`, `src/views/`, `TaskList.jsx`, `TaskSummary.jsx`, `App.css` | Entregada |
 
-Orden de ejecución. H1 no depende de nada y arranca de inmediato. H2 ya puede arrancar porque la primera etapa está integrada y el componente raíz le entrega la colección con los dos avisos de interfaz.
+Las cuatro etapas entraron en una sola solicitud de elevación, con cinco commits interiores, uno por cada bloque de trabajo. Eso se aparta del plan original de una solicitud por etapa, aunque el resultado técnico cumple lo pedido y respeta la frontera de archivos.
 
-Condiciones que debe cumplir. No modificar `src/App.jsx` para pasar propiedades nuevas. No escribir estilos dentro del marcado. No agregar dependencias. Recorrer la colección con la identidad local como clave y nunca con el índice. Eliminar `ActionButton.jsx` dentro de H2 porque el componente raíz ya dejó de importarlo.
+Respeto de la frontera. Santiago no modificó `src/index.css` ni `src/App.jsx`, salvo un salto de línea final. Esa era una condición expresa del contrato, porque el contrato prohibía tocar el archivo de coordinación.
 
-Punto de montaje de la ventana de confirmación. Ya está señalado con comentarios dentro de `src/App.jsx`. Ahí se explica qué estado declara el componente raíz, qué manejadores conecta y qué propiedades recibe la ventana.
+Cuatro observaciones menores quedan acordadas con él. La primera es que el archivo de la vista nueva se llama `NuevaView.jsx` y el contrato decía `NuevaTareaView.jsx`. La segunda es que la clase de estilo de la insignia local todavía no existe. La tercera es que sus archivos terminan las líneas con punto y coma mientras el resto del proyecto no lo hace. La cuarta es que el botón no declara tipo por defecto, aunque en la práctica el formulario funciona porque el valor por defecto del navegador resulta ser el necesario.
 
 ## Etapas de trabajo
 
@@ -244,7 +257,7 @@ Su responsabilidad es la capa de datos y la coordinación. Estas etapas construy
 
 ### Etapas de Santiago
 
-Su responsabilidad es la capa de presentación. Estas etapas construyen los componentes reutilizables, el formulario, la edición en línea y las tres vistas que consumen el estado que produce la otra capa.
+Su responsabilidad es la capa de presentación. Estas etapas construyen los componentes reutilizables, el formulario, la edición en línea y las tres vistas que consumen el estado que produce la otra capa. Las cuatro están integradas y verificadas con el analizador de código.
 
 | Etapa | Qué resuelve | Requisitos | Archivos que toca | Depende de | Cómo se comprueba |
 | --- | --- | --- | --- | --- | --- |
@@ -287,7 +300,9 @@ El componente de listado recibió desde ese momento la colección junto con los 
 
 El modelo de datos quedó resuelto en esa primera etapa y no en una posterior. Cada tarea viaja con una identidad local de tipo texto que sirve como clave en el recorrido, una identidad del servidor que puede ser nula y una bandera que indica si esa tarea existe realmente en el servidor. Tomar esa decisión en ese momento evitó tener que renombrar campos más adelante y permitió que las etapas siguientes trabajaran sobre un contrato estable.
 
-En la segunda etapa agrego las tres operaciones de escritura al servicio y al gancho, y todas usan la forma funcional del setter. Dos decisiones de esa etapa merecen registrarse. La primera es que la respuesta del servidor a la creación no se conserva, porque el simulador devuelve siempre la misma identidad y esa respuesta no representa ningún recurso. La segunda es que las operaciones de actualizar y eliminar averiguan si la tarea existe en el servidor antes de llamar al servicio, de manera que una tarea creada durante la sesión se modifica solo en el estado local y nunca se le asigna un recurso remoto que no existe.
+En la segunda etapa agregó las tres operaciones de escritura al servicio y al gancho, y todas usan la forma funcional del setter. Dos decisiones de esa etapa merecen registrarse. La primera es que la respuesta del servidor a la creación no se conserva, porque el simulador devuelve siempre la misma identidad y esa respuesta no representa ningún recurso. La segunda es que las operaciones de actualizar y eliminar averiguan si la tarea existe en el servidor antes de llamar al servicio, de manera que una tarea creada durante la sesión se modifica solo en el estado local y nunca se le asigna un recurso remoto que no existe.
+
+La tercera entrega limpió la hoja de estilos globales, que era el último punto pendiente del tutorial 06. Ese archivo traía una paleta violeta, un bloque completo de modo oscuro y un ancho fijo de contenedor que rompía la composición. Al limpiarlo se declaró la escala de azules, se eliminaron las reglas que la plantilla había dejado y se forzó el modo claro, porque el valor automático tornaba oscura la interfaz en equipos con tema oscuro. El tamaño base de la aplicación se conservó a propósito, dado que toda la escala de medidas relativas depende de ese valor.
 
 ### Contrato de integración
 
@@ -353,8 +368,8 @@ El enunciado advierte que conservar los componentes originales sin cambios no co
 | Aplicación raíz | Entregaba una cantidad fija de tareas, ejecutaba una alerta y componía toda la vista en un solo archivo | Se le retiraron los datos fijos y la alerta, y se convirtió en el punto de coordinación que comparte el estado entre las vistas |
 | Listado de tareas | Mostraba tres tareas mediante marcado repetido y sus botones solo ejecutaban alertas | Dejará de contener marcado escrito a mano para generarse desde los datos, recibir por propiedades las acciones y presentar estados diferenciados de carga, error y resultado vacío |
 | Resumen | Mostraba una cantidad fija recibida por propiedad | Pasará a mostrar los cuatro contadores que ya recibe calculados desde la colección y el filtro activo |
-| Botón de acción | Ejecutaba una función de alerta sin aportar comportamiento real | Se sustituye por un componente de botón configurable que se reutiliza en toda la aplicación |
-| Estilos | Incluían el contenedor, la tarjeta, el listado y los botones | Se conservan y se limpian los restos de la plantilla que contradecían la identidad visual del proyecto |
+| Botón de acción | Ejecutaba una función de alerta sin aportar comportamiento real | Se eliminó y quedó reemplazado por el componente de botón configurable, que ahora se reutiliza en toda la aplicación |
+| Estilos | Incluían el contenedor, la tarjeta, el listado y los botones | Se conservaron, se ampliaron con los modificadores que necesitan los componentes nuevos y se limpió la hoja de estilos globales que había dejado el generador |
 
 ### Defectos detectados en la base
 
